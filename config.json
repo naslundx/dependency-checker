@@ -1,0 +1,15 @@
+[
+{"name":"gcc", "command":"gcc --version", "regexp":"gcc \\(.+\\) (\\S+)"},
+{"name":"g++", "command":"g++ --version", "regexp":"g\\+\\+ \\(.+\\) (\\S+)"},
+{"name":"clang++", "command":"clang++-3.8 --version", "regexp":"clang version (.+)-"},
+{"name":"CMake", "command":"cmake --version", "regexp":"cmake version (.+)"},
+{"name":"Python3", "command":"python3 --version", "regexp":"Python (.+)"},
+{"name":"pycodestyle", "command":"pycodestyle --version", "regexp":"(.+)"},
+{"name":"doxygen", "command":"doxygen --version", "regexp":"(.+)"},
+{"name":"clang-tidy", "command":"clang-tidy-3.8 --version", "regexp":"LLVM version (.+)"},
+{"name":"valgrind", "command":"valgrind --version", "regexp":"valgrind-(.+)"},
+{"name":"Cppcheck", "command":"cppcheck --version", "regexp":"Cppcheck (\\d+\\.\\d+)"},
+{"name":"gdb", "command":"gdb --version", "regexp":"GNU gdb \\(.+\\) (.+)"},
+{"name":"clang-format", "command":"clang-format-4.0 --version", "regexp":"clang-format version (.+)-"},
+{"name":"adb", "command":"adb version", "regexp":"Android Debug Bridge version (.+)"}
+]
