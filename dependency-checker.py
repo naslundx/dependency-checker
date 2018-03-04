@@ -7,6 +7,7 @@ import re
 import argparse
 import json
 import logging
+import os
 
 
 # Parses incoming arguments
@@ -27,7 +28,7 @@ class DependencyCheckerArgumentParser(object):
             help="Produce no output.")
         format_group.add_argument(
             "--config",
-            default="config.json",
+            default=["config.json"],
             help="config file",
             nargs="*")
         format_group.add_argument(
@@ -75,11 +76,13 @@ def check_version(name, command, regexp, required=None, maximum=None):
         req_string = ""
 
     try:
-        output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
+        with open(os.devnull, 'w') as devnull:
+            output = subprocess.check_output(command, shell=True, universal_newlines=True, stderr=devnull).strip()
         logging.debug("--- output:\n{}\n---".format(output))
 
     except subprocess.CalledProcessError:
-        logging.error("[ERROR]\t{} not found! {}".format(name, req_string))
+        logging.error("[ERROR]\t{} - Not found! {}".format(name, req_string))
+        return False
 
     try:
         version = re.search(regexp, output, re.MULTILINE).group(1)
@@ -88,8 +91,8 @@ def check_version(name, command, regexp, required=None, maximum=None):
         maximum_version = StrictVersion(maximum) if maximum else None
         logging.debug("found version {}".format(found_version))
 
-    except (AttributeError, ValueError) as e:
-        logging.error("Error reading version from {}".format(name))
+    except (AttributeError, ValueError, UnboundLocalError) as e:
+        logging.error("[ERROR]\t{} - Could not parse version! {}".format(name, req_string))
         return False
 
     version_satisfied = ((required and found_version >= required_version) or (not required)) and \
@@ -155,11 +158,11 @@ def main():
         result = process_executor(executor, config) and result
         logging.info("")
 
+    # Print result and exit
     if result:
         logging.info("Done. Everything OK.")
     else:
         logging.info("Done. Errors detected!")
-
     return 0 if result else 1
 
 
