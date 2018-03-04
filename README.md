@@ -1,4 +1,4 @@
-# dependency-checker (version 0.9)
+# dependency-checker (version 0.91)
 Verify the existence and versions of installed dependencies using regex.
 Released under the MIT license.
 
@@ -25,17 +25,18 @@ Feel free to contribute! This is a new project and it's still uncertain where it
 ## Future features
 Features:
  - support just "contains" instead of regexp matching
- - support multiple config files
- - support asserting max version
- - assert version only if installed
+ - assert version only if installed (may not exist)
 
 Usability:
- - more arguments (silent, verbose, list all errors on exit, stop at first error)
+ - add option: list all errors on exit
+ - add option: stop at first error
+ - add option: do not print OKs
  - support pipe to script
  - run via CLI arguments
- - if no command found (and required not specified, assert existence by just calling the name)
 
 Other:
+ - make sure different config files do not conflict
+ - check the input args make sense (verbose and silent)
  - better error checking
  - add more to config file
  - documentation
