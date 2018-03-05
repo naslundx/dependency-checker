@@ -1,7 +1,7 @@
 [
 {"name":"gcc", "command":"gcc --version", "regexp":"gcc \\(.+\\) (\\S+)"},
 {"name":"g++", "command":"g++ --version", "regexp":"g\\+\\+ \\(.+\\) (\\S+)"},
-{"name":"clang++", "command":"clang++-3.8 --version", "regexp":"clang version (.+)-"},
+{"name":"clang++", "command":"clang++ --version", "regexp":"clang version (.+)-"},
 {"name":"CMake", "command":"cmake --version", "regexp":"cmake version (.+)"},
 {"name":"Python3", "command":"python3 --version", "regexp":"Python (.+)"},
 {"name":"pycodestyle", "command":"pycodestyle --version", "regexp":"(.+)"},

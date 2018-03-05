@@ -1,5 +1,6 @@
 [
 {"name":"gcc"},
 {"name":"g++", "required":"3.0"},
-{"name":"clang++", "command":"clang++-3.8 --version", "regexp":"clang version (.+)-", "required":"3.0", "maximum":"99.0"}
+{"name":"clang++", "command":"clang++ --version", "regexp":"clang version (.+)-", "required":"3.0", "maximum":"99.9"},
+{"name":"CMake", "contains": "3.8"}
 ]
