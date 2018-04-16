@@ -73,7 +73,7 @@ class DependencyCheckerConfigurations(object):
         result = []
         for part in self.data:
             for item in part:
-                if "name" in item and item["name"] == name:
+                if "name" in item and item["name"].lower() == name:
                     result.append(item)
         logging.debug("Could not find item with name {}".format(name))
         return result
@@ -141,45 +141,37 @@ def check_version(name, command, regexp, required=None, maximum=None, contains=N
 
 
 # Process executor
-def process_executor(filename, options, config):
-    executor = json.load(open(filename))
-    errors = []
+def process_executor(item, options, config):
+    name = item["name"].lower()
+    command = config.get_item_tag(name, "command")
+    regexp = config.get_item_tag(name, "regexp")
+    required = None
+    maximum = None
+    contains = None
 
-    for item in executor:
-        name = item["name"]
-        command = config.get_item_tag(name, "command")
-        regexp = config.get_item_tag(name, "regexp")
-        required = None
-        maximum = None
-        contains = None
+    logging.debug("{}:".format(name))
 
-        logging.debug("{}:".format(name))
+    if "command" in item:
+        command = item["command"]
+    elif not command:
+        logging.debug("No command set or found! Setting command to name.")
+        command = name
 
-        if "command" in item:
-            command = item["command"]
-        elif not command:
-            logging.debug("No command set or found! Setting command to name.")
-            command = name
+    if "regexp" in item:
+        regexp = item["regexp"]
 
-        if "regexp" in item:
-            regexp = item["regexp"]
+    if "required" in item:
+        required = item["required"]
 
-        if "required" in item:
-            required = item["required"]
+    if "maximum" in item:
+        maximum = item["maximum"]
 
-        if "maximum" in item:
-            maximum = item["maximum"]
+    if "contains" in item:
+        contains = item["contains"]
 
-        if "contains" in item:
-            contains = item["contains"]
-
-        result = check_version(name, command, regexp, required, maximum, contains)
-        if not result:
-            errors.append(name)
-            if options.failfast:
-                break
-
-    return errors
+    result = check_version(name, command, regexp, required, maximum, contains)
+    
+    return result
 
 
 # Main function
@@ -202,12 +194,25 @@ def main():
     # Run through executors
     errors = []
     for executor in options.executors:
-        logging.info("{}:".format(executor))
-        result = process_executor(executor, options, config)
-        errors.extend(result)
-        logging.info("")
-        if options.failfast and len(errors) > 0:
-            break
+        if ".json" in executor:
+            logging.info("{}:".format(executor))
+            data = json.load(open(executor))
+            for item in data:
+                result = process_executor(item, options, config)
+                if not result:
+                    errors.append(item["name"])
+                    if options.failfast:
+                        break
+            logging.info("")
+        else:
+            string = executor.split(" ")
+            item = {"name": string[0]}
+            if len(string) > 1:
+                item["required"] = string[1]
+            result = process_executor(item, options, config)
+            if not result:
+                errors.append(item["name"])
+
 
     # Print result
     if not errors:
